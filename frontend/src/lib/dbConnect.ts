@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 
 type ConnectionObject ={
     isConnected?:number // this means it is optional but it is a number
