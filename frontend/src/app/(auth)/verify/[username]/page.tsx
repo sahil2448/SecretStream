@@ -41,6 +41,7 @@ const VerifyAccount = () => {
     }
     setIsSubmitting(true);
     try {
+      console.log("from verify-code--->",decodedUsername, data.code);
       const response = await axios.post<ApiResponse>(`/api/verify-code`, {
         username: decodedUsername,
         code: data.code,

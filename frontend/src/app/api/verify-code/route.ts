@@ -5,7 +5,7 @@ import UserModel from "@/model/User";
 export async function POST(request:Request){
     await dbConnect();
     try {
-        const {username,code} = await request.json();
+        const {username,code} = await request.json(); 
         console.log(username,code)
         const decodedUsername = decodeURIComponent(username); // Decode URL-encoded username--> username with space will be converted to %20
 
