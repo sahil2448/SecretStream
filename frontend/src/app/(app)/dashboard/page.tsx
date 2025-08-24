@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 
-function page() {
+function dashboard() {
   return (
     <div>
       Dashboard
@@ -9,4 +9,4 @@ function page() {
   )
 }
 
-export default page
+export default dashboard
