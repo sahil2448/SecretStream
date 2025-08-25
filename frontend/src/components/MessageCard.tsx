@@ -21,6 +21,9 @@ function MessageCard({message,onMessageDelete}:MessageCardProps) {
   const handleDeleteConfirm = async() =>{
   const response = await axios.delete<ApiResponse>(`/api/delete-message/${message._id}`);
   toast.success("Message Deleted Successfully !")
+
+  onMessageDelete(message._id)
+
 }
   return (
     <div>

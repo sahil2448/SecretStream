@@ -4,7 +4,7 @@ import { useTheme } from "next-themes"
 import { Toaster as Sonner, ToasterProps } from "sonner"
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+  const { theme = "light" } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   // Prevent hydration mismatch
