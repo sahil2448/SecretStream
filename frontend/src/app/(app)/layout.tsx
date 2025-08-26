@@ -25,14 +25,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        >
-        <AuthProvider>
+    <div>
+      <AuthProvider>
         {<Navbar/>}
         {children}
       </AuthProvider>
-      </body>
-    </html>
+    </div>
+        
+
   );
 }

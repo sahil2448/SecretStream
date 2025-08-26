@@ -27,6 +27,8 @@ export default function DashboardPage() {
 
   const {data:session} = useSession();
 
+  console.log( "printing session--->",useSession());
+
   const form = useForm({
     resolver:zodResolver(AcceptMessageSchema)
   })
@@ -82,23 +84,30 @@ export default function DashboardPage() {
         acceptMessages:!acceptMessages
       })
       setValue('acceptMessages',!acceptMessages)
-      toast("Message status updated successfully !")
+      toast.success("Message status updated successfully !")
 
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
-      toast(axiosError.response?.data.message ?? "Error updating message status");
+      toast.error(axiosError.response?.data.message ?? "Error updating message status");
     }
 
   }
-      // const {username} = session?.user as User
+      // const {username:User} = session?.user as User
+      // console.log(User)
+
     // TODO: do more research
-    const baseUrl = `${window.location.protocol}//${window.location.host}`
-    // const profileUrl = `${baseUrl}/u/${username}`
-    const profileUrl = `${baseUrl}/u/`
+
+
+        // const {data:session} = useSession()
+        const user:User = session?.user as User
+    const baseUrl = `${window.location.protocol}/${window.location.host}`
+    console.log(baseUrl)
+    const profileUrl = `${baseUrl}/u/${user?.username}`
+    // const profileUrl = `${baseUrl}/u/`
 
     const copyToClipboard = () =>{
       navigator.clipboard.writeText(profileUrl)
-      toast("Copied to clipboard !")
+      toast.success("Copied to clipboard !")
     }
 
     // if(!session || !session.user) return <div>Please login to view this page</div>
