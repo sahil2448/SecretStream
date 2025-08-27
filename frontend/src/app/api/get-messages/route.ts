@@ -1,3 +1,4 @@
+// import { messages } from '@/messages.json';
 import { User } from './../../../model/User';
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]/options";
@@ -22,7 +23,7 @@ export async function GET(request:Request){
             {$match:{_id:userId}}, // match the user by _id
             {$unwind:"$messages"}, // unwind the messages array
             {$sort:{"messages.createdAt":-1}}, // sort the messages by createdAt
-            {$group:{_id:"$_id",message:{$push:"$messages"}}} // group the messages by _id
+            {$group:{_id:"$_id",messages:{$push:"$messages"}}} // group the messages by _id
         ]);
 
         if(!user || user.length==0){

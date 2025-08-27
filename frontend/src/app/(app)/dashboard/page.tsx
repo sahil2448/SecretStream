@@ -55,6 +55,7 @@ export default function DashboardPage() {
     setIsSwitchLoading(false);
     try {
       const response = await axios.get(`/api/get-messages`)
+      console.log("response from dashboard",response.data)
       setMessages(response.data.messages || []);
 
       if (refresh) {
@@ -160,7 +161,7 @@ export default function DashboardPage() {
         messages.map((message, index) => (
           <MessageCard
             key={message._id}
-            message={message}
+            message={message.content}
             onMessageDelete={handleDeleteMessage}
           />
         ))

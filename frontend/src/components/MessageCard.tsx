@@ -27,23 +27,19 @@ function MessageCard({message,onMessageDelete}:MessageCardProps) {
 }
   return (
     <div>
-        <Card className="w-full text-center shadow-none dark py-4">
+        <Card className="w-full text-center shadow-none light py-4">
         <CardHeader>
 
             <CardTitle className="mb-2 text-3xl font-bold">
-            Card Title
+            <p>{message}</p>
             </CardTitle>
              <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="destructive"><X className="w-5 h-5" /></Button>
+      <AlertDialogTrigger asChild className="w-10 self-end h-10 cursor-pointer">
+        <Button variant="destructive">X</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -51,13 +47,8 @@ function MessageCard({message,onMessageDelete}:MessageCardProps) {
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-            <CardDescription className="text-base text-muted-foreground">
-            Card Description
-            </CardDescription>
+
         </CardHeader>
-        <CardContent className="mt-2 flex flex-row gap-2 justify-center">
-            <p>Card Content</p>
-        </CardContent>
         </Card>
     </div>
   )
