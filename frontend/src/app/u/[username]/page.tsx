@@ -10,7 +10,7 @@ import { toast } from 'sonner'
 
 function Page() {
     const [inputPresent, setInputPresent] = useState(false);
-    const [inputContent,setInput] = useState("");
+    const [inputContent,setInputContent] = useState("");
 
   const params = useParams();
   useEffect(()=>{
@@ -27,12 +27,12 @@ function Page() {
     try {
          const response = await axios.post<ApiResponse>(`/api/send-message`,{username,content})
           console.log("response",response.data);
+          setInputContent("")
           toast.success("Message sent successfully !")
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Error sending message");
     }
-
   }
 
   return (
@@ -45,7 +45,7 @@ function Page() {
 
     <div className=' flex flex-col justify-center gap-3'>
       <p>Send Anonymous message to @{username}</p>
-      <Input onChange={(e)=>setInput(e.target.value)} className='h-[100px] w-[50vw]  align-text-top' type="text" placeholder="write your anonymous messages her" />
+      <Input onChange={(e)=>setInputContent(e.target.value)} value={inputContent} className='h-[100px] w-[50vw]  align-text-top' type="text" placeholder="write your anonymous messages her" />
     </div>
 
     <div>
