@@ -30,12 +30,14 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
 
   const handleDeleteConfirm = async () => {
     try {
+      const messageid = message._id;
+      console.log("msgid--->", messageid)
       const response = await axios.delete<ApiResponse>(
-        `/api/delete-message/${message._id}`
+        `/api/delete-message/${messageid}`
       );
-      toast("Message deleted successfully !");
-      onMessageDelete(message._id);
-
+      toast.success("Message deleted successfully !");
+      console.log(response.data)
+      onMessageDelete(messageid);
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
       toast.error("Error deleting message");
@@ -47,8 +49,7 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>
-            <p >{message}
-</p>
+            {message.content}
             </CardTitle>
           <AlertDialog>
             <AlertDialogTrigger asChild>

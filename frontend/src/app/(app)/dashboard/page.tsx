@@ -64,7 +64,7 @@ export default function DashboardPage() {
 
     } catch (error) {
       const axiosError = error as AxiosError<ApiResponse>;
-      toast.error(axiosError.response?.data.message ?? "Error fetching messages");
+      toast.info(axiosError.response?.data.message ?? "Error fetching messages");
     } finally {
       setIsLoading(false);
       setIsSwitchLoading(false);
@@ -161,7 +161,7 @@ export default function DashboardPage() {
         messages.map((message, index) => (
           <MessageCard
             key={message._id}
-            message={message.content}
+            message={message}
             onMessageDelete={handleDeleteMessage}
           />
         ))
