@@ -7,18 +7,24 @@ import { useParams } from 'next/navigation'
 import axios from 'axios'
 import { ApiResponse } from '@/types/ApiResponse'
 import { toast } from 'sonner'
+import { Separator } from '@/components/ui/separator'
 
 export default function Page() {
   const params = useParams() as { username?: string }
   const username = params?.username ?? 'user'
 
-  // local state
   const [inputContent, setInputContent] = useState<string>('')
   const [sending, setSending] = useState(false)
   const charLimit = 500
-
-  // derived state (no useEffect required)
   const inputPresent = inputContent.trim().length > 0
+
+  // NEW: suggestions state and loading
+  const [suggestions, setSuggestions] = useState<string[]>([
+    "What’s a hobby you’ve recently started?",
+    "If you could have dinner with any historical figure, who would it be?",
+    "What’s a simple thing that makes you happy?"
+  ])
+  const [suggestLoading, setSuggestLoading] = useState(false)
 
   const handleSendMessage = async ({ username, content }: { username: string; content: string }) => {
     if (!content.trim()) return
@@ -28,19 +34,44 @@ export default function Page() {
       console.log('response', response.data)
       setInputContent('')
       toast.success('Message sent successfully !')
-    } catch (error) {
-      console.error('Error sending message:', error)
-      toast.error('Error sending message')
+    } catch (er) {
+      if(axios.isAxiosError(er)){
+        toast.error(er.response?.data.message ?? 'Error sending message')
+      }
+      console.error('Error sending message:', er.message)
     } finally {
       setSending(false)
     }
   }
 
-  // allow Ctrl+Enter or Cmd+Enter to send
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && inputPresent && !sending) {
       e.preventDefault()
       handleSendMessage({ username, content: inputContent })
+    }
+  }
+
+  // NEW: fetch suggestions from our Next.js API
+  const fetchSuggestions = async () => {
+    try {
+      setSuggestLoading(true)
+      const res = await fetch('/api/suggest-messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username })
+      })
+      const data = await res.json()
+      if (res.ok && Array.isArray(data.suggestions)) {
+        setSuggestions(data.suggestions)
+      } else {
+        console.error('Suggest API error:', data)
+        toast.error('Could not fetch suggestions')
+      }
+    } catch (err) {
+      console.error(err)
+      toast.error('Error fetching suggestions')
+    } finally {
+      setSuggestLoading(false)
     }
   }
 
@@ -57,7 +88,6 @@ export default function Page() {
             Anonymous message for @{username}
           </label>
 
-          {/* textarea styled to match the Input component size while remaining responsive */}
           <textarea
             id="anon-message"
             value={inputContent}
@@ -77,21 +107,30 @@ export default function Page() {
               <Button
                 onClick={() => handleSendMessage({ username, content: inputContent })}
                 disabled={!inputPresent || sending}
-                className="h-[44px] px-5"
+                className="h-[44px] px-5 cursor-pointer"
               >
                 {sending ? 'Sending...' : 'Send'}
               </Button>
             </div>
           </div>
         </section>
-
-
+          <div> <Button className='cursor-pointer' onClick={fetchSuggestions}>
+              {suggestLoading ? 'Loading...' : 'Suggest-messages'}
+            </Button></div>
+           
         <div className='w-full shadow-sm border flex flex-col gap-3 rounded-sm p-5'>
-          <h1 className='text-2xl font-semibold'>Messages</h1>
+            <h1 className='text-2xl font-semibold'>Messages</h1>
           <div className='flex flex-col gap-5 justify-center items-center '>
-              <p className='border-1 w-full text-center rounded-xs py-2 hover:bg-slate-100 transition-all duration-200 cursor-pointer'>What’s a hobby you’ve recently started? </p>
-              <p className='border-1 w-full text-center rounded-xs py-2 hover:bg-slate-100 transition-all duration-200 cursor-pointer'> If you could have dinner with any historical figure, who would it be? </p>
-              <p className='border-1 w-full text-center rounded-xs py-2 hover:bg-slate-100 transition-all duration-200 cursor-pointer'> What’s a simple thing that makes you happy?</p>
+            {suggestions.map((s, i) => (
+              <p
+                key={i}
+                onClick={() => setInputContent(s)}
+                className='border-1 w-full text-center rounded-xs py-2 hover:bg-slate-100 transition-all duration-200 cursor-pointer'
+                title="Click to insert into the textarea"
+              >
+                {s}
+              </p>
+            ))}
           </div>
         </div>
 

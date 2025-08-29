@@ -53,8 +53,8 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
             </CardTitle>
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button variant='destructive'>
-                <X className="w-5 h-5" />
+              <Button variant='destructive' className='cursor-pointer'>
+                <X className="w-5 h-5 " />
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -66,10 +66,10 @@ export function MessageCard({ message, onMessageDelete }: MessageCardProps) {
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel>
+                <AlertDialogCancel className='cursor-pointer'>
                   Cancel
                 </AlertDialogCancel>
-                <AlertDialogAction onClick={handleDeleteConfirm}>
+                <AlertDialogAction className='cursor-pointer' onClick={handleDeleteConfirm}>
                   Continue
                 </AlertDialogAction>
               </AlertDialogFooter>

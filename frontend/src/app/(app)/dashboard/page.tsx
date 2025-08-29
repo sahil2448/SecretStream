@@ -134,6 +134,7 @@ export default function DashboardPage() {
         {...register('acceptMessages')}
         checked={acceptMessages}
         onCheckedChange={handleSwitchChange}
+        className="cursor-pointer"
         disabled={isSwitchLoading}
       />
       <span className="ml-2">
