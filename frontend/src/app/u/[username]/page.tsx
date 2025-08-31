@@ -2,12 +2,10 @@
 
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { useParams } from 'next/navigation'
 import axios, { AxiosError } from 'axios'
 import { ApiResponse } from '@/types/ApiResponse'
 import { toast } from 'sonner'
-import { Separator } from '@/components/ui/separator'
 
 export default function Page() {
   const params = useParams() as { username?: string }

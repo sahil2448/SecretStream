@@ -99,6 +99,7 @@ export async function POST(req: Request) {
       }
     } catch (e) {
       // not JSON — rawText may be plain string
+      console.log(e)
       suggestions = extractSuggestionsFromText(rawText);
     }
 
