@@ -16,7 +16,7 @@ export async function GET(request:Request){
         return Response.json({ success: false, message: "Not Authenticated" }, { status: 401 })
     }
 
-    const userId = new mongoose.Types.ObjectId(user._id); // Convert _id string to ObjectId
+    const userId = new mongoose.Types.ObjectId(user._id as string); // Convert _id string to ObjectId
 
     try {
         const user = await UserModel.aggregate([
