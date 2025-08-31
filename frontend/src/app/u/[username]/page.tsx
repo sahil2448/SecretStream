@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useParams } from 'next/navigation'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { ApiResponse } from '@/types/ApiResponse'
 import { toast } from 'sonner'
 import { Separator } from '@/components/ui/separator'
@@ -35,10 +35,9 @@ export default function Page() {
       setInputContent('')
       toast.success('Message sent successfully !')
     } catch (er) {
-      if(axios.isAxiosError(er)){
-        toast.error(er.response?.data.message ?? 'Error sending message')
-      }
-      console.error('Error sending message:', er.message)
+        const error = er as AxiosError<{ message?: string }>;
+        toast.error(error.response?.data?.message ?? "Error sending message");
+        console.error("Error sending message:", error.message);
     } finally {
       setSending(false)
     }
