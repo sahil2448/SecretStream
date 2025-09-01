@@ -15,17 +15,14 @@ function extractSuggestionsFromText(raw: string): string[] {
   if (!raw) return [];
   let text = raw.trim();
 
-  // Remove surrounding quotes if present (safe unescape)
   if ((text.startsWith('"') && text.endsWith('"')) || (text.startsWith("'") && text.endsWith("'"))) {
     try { text = JSON.parse(text); } catch { text = text.slice(1, -1); }
   }
 
-  // split on the requested separator first
   if (text.includes('||')) {
     return text.split(/\s*\|\|\s*/).map(s => s.trim()).filter(Boolean).slice(0, 3);
   }
 
-  // try to find a JSON array in the text
   const arrMatch = text.match(/\[.*?\]/s);
   if (arrMatch) {
     try {
@@ -34,7 +31,6 @@ function extractSuggestionsFromText(raw: string): string[] {
     } catch {}
   }
 
-  // try parsing the whole thing as JSON { suggestions: [...] } or similar
   try {
     const parsed = JSON.parse(text);
     if (parsed && Array.isArray(parsed.suggestions)) {
@@ -42,11 +38,9 @@ function extractSuggestionsFromText(raw: string): string[] {
     }
   } catch {}
 
-  // split by lines or bulletin points as a fallback
   const lines = text.split(/\r?\n+/).map(l => l.replace(/^\d+\.\s*/, '').trim()).filter(Boolean);
   if (lines.length >= 3) return lines.slice(0, 3);
 
-  // final fallback: return the whole string as one item
   return text ? [text] : [];
 }
 
@@ -75,19 +69,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ suggestions: [], error: `Ollama error: ${res.status} ${rawText}` }, { status: 502 });
     }
 
-    // Try parse as JSON object (likely shape: { model:..., response: "...", ... })
     let suggestions: string[] = [];
     try {
       const parsed = JSON.parse(rawText);
-      // Ollama commonly uses "response" field for the generated text
       let candidate: any = parsed.suggestions ?? parsed.response ?? parsed.output ?? parsed.message ?? parsed.result ?? null;
 
-      // if output is an array of chunks, join contents
       if (Array.isArray(candidate) && candidate.length && typeof candidate[0] === 'object') {
         candidate = candidate.map((c: any) => c.content ?? c).join('');
       }
 
-      // sometimes response is a quoted JSON string; normalize
       if (typeof candidate === 'string') {
         try { candidate = JSON.parse(candidate); } catch { /* keep as string */ }
       }
@@ -98,17 +88,14 @@ export async function POST(req: Request) {
         suggestions = extractSuggestionsFromText(candidate);
       }
     } catch (e) {
-      // not JSON — rawText may be plain string
       console.log(e)
       suggestions = extractSuggestionsFromText(rawText);
     }
 
-    // Defensive extra split if needed
     if (suggestions.length === 1 && suggestions[0].includes('||')) {
       suggestions = suggestions[0].split(/\s*\|\|\s*/).map(s => s.trim()).filter(Boolean).slice(0, 3);
     }
 
-    // Final fallback set so UI never breaks
     if (!suggestions.length) {
       suggestions = [
         "Hey — I just wanted to say you made me smile today.",

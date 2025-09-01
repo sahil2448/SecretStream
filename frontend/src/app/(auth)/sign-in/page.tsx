@@ -38,7 +38,6 @@ export default function SignUpForm() {
 
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
   const result =  await signIn('credentials',{redirect:false,identifier:data.identifier,password:data.password});
-  
 
   setIsSubmitting(false);
     if(result?.error){
@@ -55,7 +54,7 @@ export default function SignUpForm() {
 
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center h-[90vh] bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">

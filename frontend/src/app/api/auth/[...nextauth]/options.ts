@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
+import { toast } from "sonner";
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -19,6 +20,7 @@ export const authOptions: NextAuthOptions = {
 
                 try {
                     if (!credentials?.identifier || !credentials?.password) {
+                        toast.error("Missing credentials");
                         throw new Error("Missing credentials");
                     }
 
@@ -30,10 +32,12 @@ export const authOptions: NextAuthOptions = {
                     });
 
                     if (!user) {
+                        toast.error("No user found with the given email");
                         throw new Error("No user found with the given email");
                     }
 
                     if (!user.isVerified) {
+                        toast.error("Please verify your account first!");
                         throw new Error("Please verify your account first!");
                     }
 
@@ -51,9 +55,11 @@ export const authOptions: NextAuthOptions = {
                             isAcceptingMessage: user.isAcceptingMessage
                         };
                     } else {
+                        toast.error("Incorrect password");
                         throw new Error("Incorrect password");
                     }
                 } catch (err: any) {
+                    toast.error(err.message);
                     throw new Error(err.message || "Authentication failed");
                 }
             }
